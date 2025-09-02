@@ -1,0 +1,29 @@
+<!-- dashboard.html (placed on your Pages host) -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Roblox Dashboard with OAuth</title></head>
+<body>
+  <h1>Roblox Manager</h1>
+  <button id="login">Login with Roblox</button>
+  <div id="profile"></div>
+
+  <script>
+    // Start OAuth by redirecting the browser to server's /auth/roblox
+    document.getElementById('login').onclick = () => {
+      window.location.href = "https://sethsallies.github.io/auth/roblox";
+    };
+
+    // After successful auth, server redirected to /dashboard.html?u=<userid>
+    async function loadProfile() {
+      const url = new URL(window.location.href);
+      const userId = url.searchParams.get('u');
+      if (!userId) return;
+      // fetch stored profile
+      const r = await fetch(`/user/${userId}`); // optionally implement this endpoint on server to expose profile safely
+      const data = await r.json();
+      document.getElementById('profile').innerText = JSON.stringify(data, null, 2);
+    }
+    loadProfile();
+  </script>
+</body>
+</html>
