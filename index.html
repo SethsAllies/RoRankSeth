@@ -1,1 +1,193 @@
-https://apis.roblox.com/oauth/v1/authorize?client_id=3858462033669458605&response_type=code&redirect_uri=https://sethsallies.github.io/RoRankSeth/callback.html&scope=openid%20profile
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roblox Group & Game Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      padding: 20px;
+      background: #222;
+      font-size: 24px;
+    }
+    main {
+      padding: 20px;
+    }
+    button {
+      background: #00b06f;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 8px;
+    }
+    button:hover {
+      background: #00985f;
+    }
+    section {
+      margin: 20px auto;
+      max-width: 500px;
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      text-align: left;
+    }
+    input {
+      width: 95%;
+      padding: 10px;
+      margin: 6px 0;
+      border: none;
+      border-radius: 6px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Roblox Group & Game Dashboard
+  </header>
+
+  <main>
+    <p id="status">Please log in with your Roblox account.</p>
+    <button id="loginBtn">Login with Roblox</button>
+
+    <div id="dashboard" style="display:none;">
+      <h2>Welcome, <span id="username"></span>!</h2>
+
+      <!-- Rank User -->
+      <section>
+        <h2>Rank a User</h2>
+        <input type="text" id="rankUserId" placeholder="Target UserId">
+        <input type="text" id="rankRoleId" placeholder="RoleId">
+        <button onclick="rankUser()">Rank User</button>
+        <p id="rankResult"></p>
+      </section>
+
+      <!-- Shout -->
+      <section>
+        <h2>Group Shout</h2>
+        <input type="text" id="shoutMessage" placeholder="Message">
+        <button onclick="postShout()">Post Shout</button>
+        <p id="shoutResult"></p>
+      </section>
+
+      <!-- Payouts -->
+      <section>
+        <h2>Group Payout</h2>
+        <input type="text" id="payoutUserId" placeholder="Target UserId">
+        <input type="number" id="payoutAmount" placeholder="Amount (Robux)">
+        <button onclick="payout()">Send Payout</button>
+        <p id="payoutResult"></p>
+      </section>
+
+      <!-- Banlist -->
+      <section>
+        <h2>Ban User</h2>
+        <input type="text" id="banUserId" placeholder="Target UserId">
+        <button onclick="banUser()">Ban User</button>
+        <p id="banResult"></p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const CLIENT_ID = "YOUR_CLIENT_ID"; // Roblox Creator Dashboard
+    const REDIRECT_URI = "https://YOUR_GITHUB_USERNAME.github.io/index.html";
+    const SCOPE = "openid profile";
+    const BACKEND = "https://YOUR_BACKEND_HOST"; // Your server.js hosting URL
+
+    let currentUserId = null;
+
+    // --- Login flow ---
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const state = Math.random().toString(36).substring(2);
+      const authUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPE)}&state=${state}`;
+      window.location.href = authUrl;
+    });
+
+    // Handle callback
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    const state = urlParams.get("state");
+
+    if (code) {
+      document.getElementById("status").innerText = "Logging you in...";
+      fetch(`${BACKEND}/auth/callback?code=${code}&state=${state}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById("status").innerText = "Error: " + data.error;
+          } else {
+            currentUserId = data.profile.user_id || data.profile.sub;
+            document.getElementById("status").style.display = "none";
+            document.getElementById("loginBtn").style.display = "none";
+            document.getElementById("dashboard").style.display = "block";
+            document.getElementById("username").innerText = data.profile.name || "Roblox User";
+          }
+        })
+        .catch(err => {
+          document.getElementById("status").innerText = "Login failed: " + err;
+        });
+    }
+
+    // --- Dashboard Functions ---
+    function rankUser() {
+      const uid = document.getElementById("rankUserId").value;
+      const role = document.getElementById("rankRoleId").value;
+      fetch(`${BACKEND}/api/rank`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-userid": currentUserId },
+        body: JSON.stringify({ targetUserId: uid, rankId: role })
+      }).then(r => r.json()).then(j => {
+        document.getElementById("rankResult").innerText = JSON.stringify(j);
+      });
+    }
+
+    function postShout() {
+      const msg = document.getElementById("shoutMessage").value;
+      fetch(`${BACKEND}/api/shout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-userid": currentUserId },
+        body: JSON.stringify({ message: msg })
+      }).then(r => r.json()).then(j => {
+        document.getElementById("shoutResult").innerText = JSON.stringify(j);
+      });
+    }
+
+    function payout() {
+      const uid = document.getElementById("payoutUserId").value;
+      const amt = document.getElementById("payoutAmount").value;
+      fetch(`${BACKEND}/api/payout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-userid": currentUserId },
+        body: JSON.stringify({ targetUserId: uid, amount: amt })
+      }).then(r => r.json()).then(j => {
+        document.getElementById("payoutResult").innerText = JSON.stringify(j);
+      });
+    }
+
+    function banUser() {
+      const uid = document.getElementById("banUserId").value;
+      fetch(`${BACKEND}/api/ban`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-userid": currentUserId },
+        body: JSON.stringify({ targetUserId: uid })
+      }).then(r => r.json()).then(j => {
+        document.getElementById("banResult").innerText = JSON.stringify(j);
+      });
+    }
+  </script>
+</body>
+  </html>
