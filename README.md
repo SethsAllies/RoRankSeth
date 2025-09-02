@@ -40,7 +40,7 @@ A hybrid system that works with:
   - [Render](https://render.com/), [Railway](https://railway.app/), [Heroku](https://heroku.com/), or VPS.
 - Add `.env` with:
   ```env
-  CLIENT_ID=3858462033669458605
+  CLIENT_ID=123456789._._._._._.
   CLIENT_SECRET=your_secret_here
   REDIRECT_URI=https://username.github.io/RepositoryName/callback.html
   GROUP_ID=your_group_id
