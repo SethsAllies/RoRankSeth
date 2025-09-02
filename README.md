@@ -4,10 +4,22 @@ A hybrid system that works with:
 - Roblox **OAuth login** (no cookies).
 - **GitHub Pages** frontend (static login & dashboard).
 - **Node.js backend** for group management (rank, shout, payouts, banlist).
-
 ---
 
 ## 📂 Project Structure
+
+├── index.html         # Login page
+
+├── callback.html      # Roblox OAuth redirect
+
+├── server.js          # Backend with APIs
+
+├── package.json       # Dependencies
+
+├── oauth_db.json      # Local storage (created automatically)
+
+└── README.md          # Instructions
+
 ---
 
 ## ⚙️ Setup
@@ -15,7 +27,7 @@ A hybrid system that works with:
 ### 1. Roblox OAuth App
 - Go to [Roblox Creator Dashboard](https://create.roblox.com/dashboard).
 - Register an **OAuth App**.
-- Set redirect URL → `https://sethsallies.github.io/RoRankSeth/callback.html`.
+- Set redirect URL → `https://username.github.io/RepositoryName/callback.html`.
 - Copy `Client ID` and `Client Secret`.
 
 ### 2. Frontend (GitHub Pages)
@@ -30,6 +42,6 @@ A hybrid system that works with:
   ```env
   CLIENT_ID=3858462033669458605
   CLIENT_SECRET=your_secret_here
-  REDIRECT_URI=https://sethsallies.github.io/RoRankSeth/callback.html
+  REDIRECT_URI=https://username.github.io/RepositoryName/callback.html
   GROUP_ID=your_group_id
   PORT=3000
