@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roblox Hybrid Bot Dashboard</title>
+  <style>
+    body {font-family: Arial, sans-serif; background:#111; color:#eee; text-align:center; padding:40px;}
+    h1 {color:#00bfff;}
+    .wrap {max-width:600px; margin:auto;}
+    input, button {padding:10px; margin:5px; border-radius:6px; border:none;}
+    input {width:70%;}
+    button {background:#00bfff; color:#fff; cursor:pointer;}
+    button:hover {opacity:0.8;}
+    .card {background:#222; padding:20px; border-radius:10px; margin:15px 0;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Roblox Hybrid Bot Dashboard</h1>
+    <div class="card">
+      <h3>API Setup</h3>
+      <input id="apiUrl" placeholder="Server API URL"><br>
+      <input id="apiKey" placeholder="API Key"><br>
+    </div>
+    <div class="card">
+      <h3>Rank User</h3>
+      <input id="username" placeholder="Username"><br>
+      <input id="rank" placeholder="Rank Id"><br>
+      <button onclick="rankUser()">Rank</button>
+    </div>
+    <div class="card">
+      <h3>Group Shout</h3>
+      <input id="shout" placeholder="Message"><br>
+      <button onclick="groupShout()">Shout</button>
+    </div>
+    <div class="card">
+      <h3>Payout</h3>
+      <input id="payoutUser" placeholder="Username"><br>
+      <input id="payoutAmount" placeholder="Amount"><br>
+      <button onclick="payout()">Payout</button>
+    </div>
+  </div>
+  <script>
+    function getApiConfig() {
+      return {
+        url: document.getElementById("apiUrl").value,
+        key: document.getElementById("apiKey").value
+      };
+    }
+    async function rankUser() {
+      let {url, key} = getApiConfig();
+      let u = document.getElementById("username").value;
+      let r = parseInt(document.getElementById("rank").value);
+      let res = await fetch(url + "/rank", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":key},
+        body:JSON.stringify({username:u, rank:r})
+      });
+      alert(await res.text());
+    }
+    async function groupShout() {
+      let {url, key} = getApiConfig();
+      let msg = document.getElementById("shout").value;
+      let res = await fetch(url + "/shout", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":key},
+        body:JSON.stringify({message:msg})
+      });
+      alert(await res.text());
+    }
+    async function payout() {
+      let {url, key} = getApiConfig();
+      let u = document.getElementById("payoutUser").value;
+      let amt = parseInt(document.getElementById("payoutAmount").value);
+      let res = await fetch(url + "/payout", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":key},
+        body:JSON.stringify({username:u, amount:amt})
+      });
+      alert(await res.text());
+    }
+  </script>
+</body>
+</html>
