@@ -21,7 +21,7 @@ A hybrid system that works with:
 ### 2. Frontend (GitHub Pages)
 - Fork this repo → Enable **GitHub Pages** → Deploy `index.html` + `callback.html`.
 - Your site will be at:  
-  `https://USERNAME.github.io/RoRankSeth/`
+  `https://USERNAME.github.io/RepositoryName/`
 
 ### 3. Backend (Node.js)
 - Deploy `server.js` to:
