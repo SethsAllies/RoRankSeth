@@ -250,9 +250,13 @@ Banlist integration with all group actions
 
 ---
 
-## 📜 License
+## 📜 License 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![MIT-Logo-New-svg.png](https://i.postimg.cc/bv86GZr8/MIT-Logo-New-svg.png)](https://postimg.cc/ZW7P2K6D)
 
-This project is licensed under the MIT License.
+This repository is licensed under the **MIT License**.  
+You are free to use, modify, and distribute this project, provided that proper credit is given and a copy of the license is included with any copies or substantial portions of the software.  
+See the [LICENSE](LICENSE) file for full details.
 
 
 ---
